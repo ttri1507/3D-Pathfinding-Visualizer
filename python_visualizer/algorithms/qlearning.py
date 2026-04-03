@@ -9,6 +9,10 @@ import random
 import math
 
 
+# Maximum number of Q-table snapshots stored for visualisation playback.
+# Kept low to avoid unbounded memory growth during long training runs.
+MAX_ANIMATION_SNAPSHOTS = 1300
+
 ACTIONS = {
     "up":    (-1,  0),
     "down":  ( 1,  0),
@@ -47,7 +51,7 @@ class QLearningAgent:
         all_states = [(r, c) for r in range(self.rows) for c in range(self.cols)]
         i = 0
         while i < self.epochs:
-            if len(self.records) > 1300:
+            if len(self.records) > MAX_ANIMATION_SNAPSHOTS:
                 break
             # choose starting state: random for first 60 %, start for last 40 %
             if i > 0.6 * self.epochs:

@@ -175,10 +175,10 @@ class App:
         pygame.init()
         self.screen = pygame.display.set_mode((WINDOW_W, WINDOW_H))
         pygame.display.set_caption("3D Pathfinding Visualiser – Python")
-        self.clock  = pygame.font.Font(None, 20)
+        self.clock_ = pygame.time.Clock()
         self.font   = pygame.font.SysFont("segoeui", 15, bold=True)
         self.sfont  = pygame.font.SysFont("segoeui", 13)
-        self.clock_ = pygame.time.Clock()
+        self.small_font = pygame.font.Font(None, 20)
 
         self.grid  = build_grid(ROWS, COLS, START_DEFAULT, FINISH_DEFAULT)
         self.start  = START_DEFAULT
@@ -227,24 +227,37 @@ class App:
         self.btn_reset  = Button((x + 3*(bw+pad), y, bw, bh), "Reset Grid")
 
         # ── Sidebar (Q-Learning settings) ────────────────────────────────────
-        sx  = WINDOW_W - SIDEBAR_W + 8
-        iy  = TOOLBAR_H + 10
-        iw  = SIDEBAR_W - 16
-        ih  = 22
+        sx      = WINDOW_W - SIDEBAR_W + 8
+        iy      = TOOLBAR_H + 10
+        iw      = SIDEBAR_W - 16
+        ih      = 22
+        row_h   = 34   # vertical spacing between sidebar rows
+
+        # Named row indices for each input field (every label takes 1 row,
+        # every input box sits on the row below its label).
+        ROW_EPOCHS    = 1
+        ROW_LR        = 3
+        ROW_DISCOUNT  = 5
+        ROW_CURIOSITY = 7
+        ROW_SR        = 9
+        ROW_SC        = 10
+        ROW_FR        = 12
+        ROW_FC        = 13
+        ROW_BUTTONS   = 15
 
         def _ib(row, default):
-            return InputBox((sx, iy + row * 34, iw, ih), default)
+            return InputBox((sx, iy + row * row_h, iw, ih), default)
 
-        self.ib_epochs    = _ib(1,  350000)
-        self.ib_lr        = _ib(3,  0.2)
-        self.ib_discount  = _ib(5,  0.8)
-        self.ib_curiosity = _ib(7,  0.8)
-        self.ib_sr        = _ib(9,  5)
-        self.ib_sc        = _ib(10, 5)
-        self.ib_fr        = _ib(12, 24)
-        self.ib_fc        = _ib(13, 24)
+        self.ib_epochs    = _ib(ROW_EPOCHS,    350000)
+        self.ib_lr        = _ib(ROW_LR,        0.2)
+        self.ib_discount  = _ib(ROW_DISCOUNT,  0.8)
+        self.ib_curiosity = _ib(ROW_CURIOSITY, 0.8)
+        self.ib_sr        = _ib(ROW_SR,        5)
+        self.ib_sc        = _ib(ROW_SC,        5)
+        self.ib_fr        = _ib(ROW_FR,        24)
+        self.ib_fc        = _ib(ROW_FC,        24)
 
-        by = iy + 15 * 34
+        by = iy + ROW_BUTTONS * row_h
         self.btn_train   = Button((sx, by,        iw, bh), "Train Agent")
         self.btn_policy  = Button((sx, by + bh+6, iw, bh), "Show Policy", disabled=True)
         self.btn_rst_agt = Button((sx, by + 2*(bh+6), iw, bh), "Reset Agent")
